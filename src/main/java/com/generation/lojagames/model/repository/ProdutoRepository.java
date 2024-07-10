@@ -1,4 +1,7 @@
 package com.generation.lojagames.model.repository;
 
-public interface ProdutoRepository extends org.springframework.data.jpa.repository.JpaRepository<com.generation.lojagames.model.Produto, java.lang.Long> {
+import com.generation.lojagames.model.Produto;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface ProdutoRepository extends JpaRepository<Produto, Long> {
 }
