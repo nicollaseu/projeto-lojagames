@@ -2,7 +2,9 @@ package com.generation.lojagames.controller;
 
 import com.generation.lojagames.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import com.generation.lojagames.model.Categoria;
@@ -24,16 +26,22 @@ public class CategoriaController {
         return categoriaRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Categoria not found"));
     }
 
+    @GetMapping("/categoria/{nome}")
+    public ResponseEntity<List<Categoria>> getByCategory(@PathVariable String nome){
+        return ResponseEntity.ok(categoriaRepository.findAllByNomeContainingIgnoreCase(nome));
+    }
+
     @PostMapping
     public Categoria createCategoria(@RequestBody Categoria categoria) {
         return categoriaRepository.save(categoria);
     }
 
-    @PutMapping("/{id}")
-    public Categoria updateCategoria(@PathVariable Long id, @RequestBody Categoria categoriaDetails) {
-        Categoria categoria = categoriaRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Categoria not found"));
-        categoria.setNome(categoriaDetails.getNome());
-        return categoriaRepository.save(categoria);
+    @PutMapping
+    public ResponseEntity<Categoria> put(@RequestBody Categoria category) {
+        return categoriaRepository.findById(category.getId())
+                .map(resposta -> ResponseEntity.status(HttpStatus.CREATED)
+                        .body(categoriaRepository.save(category)))
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
     @DeleteMapping("/{id}")

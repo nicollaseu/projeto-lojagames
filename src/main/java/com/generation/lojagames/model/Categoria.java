@@ -1,5 +1,7 @@
 package com.generation.lojagames.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.util.List;
 import lombok.*;
@@ -9,12 +11,15 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Categoria {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String nome;
 
-    @OneToMany(mappedBy = "categoria")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "categoria", cascade = CascadeType.REMOVE)
+    @JsonManagedReference
     private List<Produto> produtos;
 
     public Long getId() {
@@ -33,11 +38,11 @@ public class Categoria {
         this.nome=nome;
     }
 
-    public List <Produto> getProdutos() {
+    public List <Produto> getProduct() {
         return produtos;
     }
 
-    public void setProdutos(List <Produto> produtos) {
-        this.produtos=produtos;
+    public void setProduct(List <Produto> product) {
+        this.produtos = product;
     }
 }
